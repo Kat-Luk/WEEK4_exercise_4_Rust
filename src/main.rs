@@ -67,9 +67,7 @@ fn create_threads(money: i64) {
                     println!("The thieves have left.");
                     std::process::exit(0);
                 }
-                _ => {
-                    println!("Oh nooo");
-                }
+                _ => {}
             }
         }
     });
