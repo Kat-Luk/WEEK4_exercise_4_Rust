@@ -35,10 +35,7 @@ fn create_threads(money: i64) {
         loop{
             thread::sleep(Duration::from_secs(3));
             let mut m = money1.lock().unwrap();
-            if *m <= 600000 { 
-                println!("You lost all your money!");  
-                std::process::exit(0);
-            }
+            if *m <= 600000 { break; }
             *m -= 35000;
             println!("ALERT!!! Someone stole $35,000 from you!");
             tx1.send(*m).unwrap();
