@@ -37,13 +37,13 @@ fn create_threads(money: i64) {
         loop {
             thread::sleep(Duration::from_secs(3));
             let mut m = money1.lock().unwrap();
-            if *m <= 0 {
-                println!("You lost all your money!");
-                std::process::exit(0);
-            } 
             if starting_amount > 600_000 && *m <= 600_000 { break; }
             *m -= 35_000;
             println!("ALERT!!! Someone stole $35,000 from you!");
+            if *m <= 0 {
+                println!("You lost all your money!");
+                std::process::exit(0);
+            }
             tx1.send(*m).unwrap();
         }
     });
@@ -59,6 +59,10 @@ fn create_threads(money: i64) {
             }
             *m -= 10_000;
             println!("ALERT!!! Someone stole $10,000 from you!");
+            if *m <= 0 {
+                println!("You lost all your money!");
+                std::process::exit(0);
+            }
             tx2.send(*m).unwrap();
             if *m <= 550_000 { break; }
         }
