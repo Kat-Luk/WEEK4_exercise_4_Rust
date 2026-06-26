@@ -32,11 +32,11 @@ fn create_threads(money: i64) {
     let money1 = Arc::clone(&money);
     let tx1 = tx.clone();
     thread::spawn(move || {
-        loop{
+        loop {
             thread::sleep(Duration::from_secs(3));
             let mut m = money1.lock().unwrap();
-            if *m <= 600000 { break; }
-            *m -= 35000;
+            if starting_amount > 600_000 && *m <= 600_000 { break; }
+            *m -= 35_000;
             println!("ALERT!!! Someone stole $35,000 from you!");
             tx1.send(*m).unwrap();
         }
