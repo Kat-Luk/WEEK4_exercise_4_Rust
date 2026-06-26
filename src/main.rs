@@ -57,7 +57,6 @@ fn create_threads(money: i64) {
 
     let tx3 = tx.clone();
     thread::spawn(move || {
-        thread::sleep(Duration::from_secs(5));
         loop{
             io::stdout().flush().unwrap();
             let mut user_input = String::new();
