@@ -50,6 +50,7 @@ fn create_threads(money: i64) {
 
     let money2 = Arc::clone(&money);
     thread::spawn(move || {
+        thread::sleep(Duration::from_millis(100));
         loop {
             thread::sleep(Duration::from_secs(5));
             let mut m = money2.lock().unwrap();
