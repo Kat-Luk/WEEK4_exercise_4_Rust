@@ -28,9 +28,12 @@ fn create_threads(money: i64) {
     let money = Arc::new(Mutex::new(money));
     let starting_amount = *money.lock().unwrap();
     let (tx, rx) = mpsc::channel();
+    let tx1 = tx.clone();
+    let tx2 = tx.clone();
+    let tx3 = tx.clone();
+    drop(tx);
 
     let money1 = Arc::clone(&money);
-    let tx1 = tx.clone();
     thread::spawn(move || {
         loop {
             thread::sleep(Duration::from_secs(3));
@@ -43,22 +46,17 @@ fn create_threads(money: i64) {
     });
 
     let money2 = Arc::clone(&money);
-    let tx2 = tx.clone();
     thread::spawn(move || {
         loop{
             thread::sleep(Duration::from_secs(5));
             let mut m = money2.lock().unwrap();
-            if *m <= 0 { 
-                println!("You lost all your money!");
-                std::process::exit(0);
-            }
-            *m -= 10000;
+            *m -= 10_000;
+            if *m <= 0 { break; }
             println!("ALERT!!! Someone stole $10,000 from you!");
             tx2.send(*m).unwrap();
         }
     });
 
-    let tx3 = tx.clone();
     thread::spawn(move || {
         loop{
             io::stdout().flush().unwrap();
@@ -66,7 +64,7 @@ fn create_threads(money: i64) {
             io::stdin().read_line(&mut user_input).expect("Failed to read input");
             match user_input.trim() {
                 "catch" => {
-                    println!("The thieves have left.");
+                    println!("caught the thieves.");
                     std::process::exit(0);
                 }
                 _ => {}
@@ -78,4 +76,5 @@ fn create_threads(money: i64) {
     for dollar in rx {
         println!("Funds left: {}", dollar);
     }
+    println!("The thieves have left.");
 }
