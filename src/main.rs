@@ -30,7 +30,6 @@ fn create_threads(money: i64) {
     let (tx, rx) = mpsc::channel();
     let tx1 = tx.clone();
     let tx2 = tx.clone();
-    let tx3 = tx.clone();
     drop(tx);
 
     let money1 = Arc::clone(&money);
@@ -38,7 +37,11 @@ fn create_threads(money: i64) {
         loop {
             thread::sleep(Duration::from_secs(3));
             let mut m = money1.lock().unwrap();
-            if starting_amount > 600_000 && *m < 600_000 { break; }
+            if *m <= 0 {
+                println!("You lost all your money!");
+                std::process::exit(0);
+            } 
+            if starting_amount > 600_000 && *m <= 600_000 { break; }
             *m -= 35_000;
             println!("ALERT!!! Someone stole $35,000 from you!");
             tx1.send(*m).unwrap();
@@ -47,11 +50,14 @@ fn create_threads(money: i64) {
 
     let money2 = Arc::clone(&money);
     thread::spawn(move || {
-        loop{
+        loop {
             thread::sleep(Duration::from_secs(5));
             let mut m = money2.lock().unwrap();
-            *m -= 10_000;
-            if *m <= 0 { break; }
+            if *m <= 0 {
+                println!("You lost all your money!");
+                std::process::exit(0);
+            }
+            *m -= 10_000;  // ← subtract after check
             println!("ALERT!!! Someone stole $10,000 from you!");
             tx2.send(*m).unwrap();
         }
