@@ -57,9 +57,10 @@ fn create_threads(money: i64) {
                 println!("You lost all your money!");
                 std::process::exit(0);
             }
-            *m -= 10_000;  // ← subtract after check
+            *m -= 10_000;
             println!("ALERT!!! Someone stole $10,000 from you!");
             tx2.send(*m).unwrap();
+            if *m <= 550_000 { break; }
         }
     });
 
